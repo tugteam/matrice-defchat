@@ -78,11 +78,6 @@ function init(self)
 	gui.set_color(self.cL,vmath.vector4(.8,.8,.8,0.3))			-- Start with a darkened command line
 	
 	self.lineWidth = self.clProperties.width - (self.clProperties.width/15)
-
-	
-	-- Example message:
-	local ex_Message = {"Hello world, I'm DEF_CHAT"}
-	msg.post("/DefChat#DefChat_GUI", "message", ex_Message)
 end
 
 function update(self, dt)
@@ -115,9 +110,11 @@ local once = false
 function on_input(self, action_id, action)
 	if (action_id == hash("enter") and action.released) then 		-- If enter is pressed, it basically flips a switch value. On/off/on/off etc.
 		if self.enter == false then
+			msg.post(local_player_id, "block_move")
 			self.enter = true
 			gui.set_color(self.cL,vmath.vector4(.8,.8,.8,1))
 		elseif self.enter == true then
+			msg.post(local_player_id, "release_move")
 			self.enter = false
 			print("DEF_CHAT:HIDDEN_CHARACTERS: " .. self.dltMash)
 			self.dltMash = ""
@@ -125,6 +122,10 @@ function on_input(self, action_id, action)
 				self.lineWidth = self.clProperties.width - (self.clProperties.width/15)
 				self.chatProperties = get_length(self,self.chat)
 				if get_command(self, self.chat) == false then
+					-- Send typed message to NoobHub
+					msg.post('/noobhub/multiplayer#script', 'send_message', {body = self.chat})
+					-- Add local player name to message:
+					self.chat = local_player_name .. ': ' .. self.chat
 					buildMessage(self,self.chat)					--Display new message
 				end
 				print("DEF_CHAT:CHAT:RECEIVED_TEXT: " .. self.chat)
