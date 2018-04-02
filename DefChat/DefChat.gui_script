@@ -128,7 +128,7 @@ function on_input(self, action_id, action)
 					-- Send typed message to NoobHub
 					msg.post(shared_data.current_map.url, 'send_message', {body = self.chat})
 					-- Add local player name to message:
-					self.chat = local_player_name .. ': ' .. self.chat
+					self.chat = shared_data.current_char.name .. ': ' .. self.chat
 					buildMessage(self,self.chat)					--Display new message
 				end
 				print("DEF_CHAT:CHAT:RECEIVED_TEXT: " .. self.chat)
