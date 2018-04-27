@@ -5,16 +5,15 @@ local shared_data = require "multiplayer.shared_data"
 
 local iter = 0
 
--- ALARMS
-local caret_alarm = {name = "CARET_ALARM", time = 0.48}
-local stamp_alarm = {name = "STAMP_ALARM", time = 0.001}
-
-
 local msgStrings = {}
 
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
+
+	-- ALARMS
+	self.caret_alarm = {name = "CARET_ALARM", time = 0.48}
+	self.stamp_alarm = {name = "STAMP_ALARM", time = 0.001}
 	
 	-- < INTEGERS
 	self.messages = 0
@@ -65,22 +64,20 @@ function init(self)
 
 	
 	-- -- < INITIALIZE >
-
-	gui.set_color(self.cL,Properties.commandline_color)			-- Set command line color to specified property.
+	gui.set_color(self.cL,Properties.commandline_color.idle)			-- Set command line color to specified property.
 
 	self.lineWidth = self.clProperties.width - (self.clProperties.width/15)
 
 	self.font = Properties.fonts.default									-- Set default font to specified property.
-	print("DEF_CHAT:FONTS:ACQUIRED: "); pprint(fonts)
+	print("DEF_CHAT:FONTS:ACQUIRED: "); pprint(Properties.fonts)
 	pprint("DEF_CHAT:FONT:DEFAULT: ".. self.font.name)
 
 	self.chatCommands = Properties.commands
 
 	self.stamp_text.instant = Properties.stamp_text_instant
 
-	caret_alarm.time = Properties.caret_speed
-	stamp_alarm.time = Properties.stamp_speed
-
+	self.caret_alarm.time = Properties.caret_speed
+	self.stamp_alarm.time = Properties.stamp_speed
 end
 
 function update(self, dt)
@@ -89,7 +86,7 @@ function update(self, dt)
 	if self.stamp_text.go == true then
 		if self.stamp_text.instant == true then
 			stamp(self,self.stamp_text.instant)
-		elseif Alarm(stamp_alarm) == true then
+		elseif Alarm(self.stamp_alarm) == true then
 			stamp(self)
 		end
 	end
@@ -115,7 +112,7 @@ function on_input(self, action_id, action)
 		if self.enter == false then
 			msg.post(local_player_id, "block_move")
 			self.enter = true
-			gui.set_color(self.cL,vmath.vector4(.8,.8,.8,1))
+			gui.set_color(self.cL,Properties.commandline_color.active)
 		elseif self.enter == true then
 			msg.post(local_player_id, "release_move")
 			self.enter = false
@@ -138,7 +135,7 @@ function on_input(self, action_id, action)
 			self.hiddenChat.text = ""
 			self.hiddenChat.size = 0
 			gui.set_text(gui.get_node("CL_Text"),self.chat)
-			gui.set_color(self.cL,vmath.vector4(.8,.8,.8,.3))
+			gui.set_color(self.cL,Properties.commandline_color.idle)
 		end
 	end
 																			-- End of enter switcheruner
@@ -357,7 +354,7 @@ function caret(self)
 			end
 			gui.set_position(self.cN,vmath.vector3(self.caretPos.x+self.chatSize,self.caretPos.y,self.caretPos.z))
 		end
-		if Alarm(caret_alarm) == true then
+		if Alarm(self.caret_alarm) == true then
 			self.caret = self.caret * -1
 			if self.caret == 1 then
 				gui.set_text(self.cN,"|")
@@ -372,9 +369,11 @@ function caret(self)
 	end
 end
 
-function clear_chat(self)
-	get_table_length(self.chatNodes)
-	for n=1,get_table_length(self.chatNodes),1 do
+function clear_chat(self,amt)
+	if amt == nil then
+		amt = get_table_length(self.chatNodes)
+	end
+	for n=1,amt,1 do
 		self.dlt = self.dlt + 1
 		gui.delete_node(self.chatNodes[self.dlt])
 		self.chatNodes[self.dlt] = nil
@@ -383,17 +382,41 @@ end
 
 function get_command(self,string)
 	local found = false
+	local args = {}
+	local cutout = 0
+	
 	self.command = ""
 	
 	if string.sub(string, 1,1) == ">" then
 		local read = string.sub(string, 2,-1)
 		self.command = string.match(read,"%a+") --"(%w+)(.+)")
 		self.command = string.lower(self.command)
+
+		cutout = string.len(self.command)
 	end
 	
 	for i=1,get_table_length(self.chatCommands),1 do
 		if self.chatCommands[i].command == self.command then
-			_G[self.chatCommands[i].func](self)
+
+			if self.chatCommands[i].args ~= nil then
+				for a=1,get_table_length(self.chatCommands[i].args),1 do
+
+					read = string.sub(string, 2+cutout,-1)
+					local arg = string.match(read,"%a+") --"(%w+)(.+)")
+					if arg == nil then
+						arg = string.match(read,"%d+")
+						arg = tonumber(arg)
+					else
+						arg = string.lower(arg)
+					end
+
+					cutout = cutout + string.len(arg)
+					
+					args[a] = arg
+				end
+			end
+
+			_G[self.chatCommands[i].func](self,unpack(args))
 			found = true
 		end
 	end
