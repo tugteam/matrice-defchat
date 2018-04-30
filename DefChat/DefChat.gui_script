@@ -9,6 +9,8 @@ local msgStrings = {}
 
 
 function init(self)
+	gui.set_render_order(1)
+
 	msg.post(".", "acquire_input_focus")
 
 	-- ALARMS
