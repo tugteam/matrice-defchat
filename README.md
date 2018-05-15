@@ -16,9 +16,7 @@ From Character-Precise linebreaking to the ability to stamp messages overtime, i
 
 # Installation Guide
 
-https://github.com/GamingBud/DefChat/archive/master.zip
-
-To install DefChat, you need to add it as a library dependency with the above link. Click the "Copy Library URL" button above, open your game.project file, and paste the url into the "Dependencies" list.
+To install DefChat, you need to add it as a library dependency. Click the "Copy Library URL" button above, open your game.project file, and paste the url into the "Dependencies" list.
 
 Then go to the toolbar at the top of your editor, select "Project" and click "Fetch Libraries". You should see the "DefChat" folder appear in a few seconds.
 
@@ -30,7 +28,7 @@ Then go to the toolbar at the top of your editor, select "Project" and click "Fe
 
 I set aside a properties module for DefChat to hook to that will not be overwritten every update. This allows you to make modifications, and not have those set back to the default for every update. Current properties:
 
-_ = {
+placeholder = {
 
 	Properties = {
 
@@ -41,24 +39,24 @@ _ = {
 
 		commands = {													-- Commands to be executed after '>' key. Runs function named under 'func'.
 
-		{
-			command = "clear",
-			func = "clear_chat",
-			args = {"amount"}
+			{
+				command = "clear",
+				func = "clear_chat",
+				args = {"amount"}
+			}
+
+		},
+
+		stamp_text_instant = true,										-- Set stamp property. (True)  instant messasge. (False) stamped message.
+
+		caret_speed = 0.48,												-- Set timing properties. Floor value is monitor refresh rate.
+		stamp_speed = 0.001,
+
+		commandline_color = {
+			active = vmath.vector4(.8,.8,.8,0.9),					-- Set command line color.
+			idle = vmath.vector4(.2,.2,.2,0.5)
 		}
-
-	},
-
-	stamp_text_instant = true,										-- Set stamp property. (True)  instant messasge. (False) stamped message.
-
-	caret_speed = 0.48,												-- Set timing properties. Floor value is monitor refresh rate.
-	stamp_speed = 0.001,
-
-	commandline_color = vmath.vector4(.8,.8,.8,0.3)					-- Set command line color.
-
-	}  
-	
-}
+	}
 
 ------
 
@@ -99,3 +97,10 @@ ADDED: Frame to GUI. Messages are now cropped to the boundaries of the chat box.
 ADDED: Command arguments. You can now make your own command, and have it gather each argument from the input in succession. For example, >clear 2. The clear_chat function would recieve this and only delete 2 messages.  
 
 CHANGED: Organization to make things easier to understand/follow along.
+
+-----
+
+# Version 0.560 - May 15th, 2018
+
+ADDED: Use of special characters. You can now use special characters in the chat, as long as your font supports them.
+ADDED: Alt-Sequence functionality. Hold Alt and enter a sequence to print special characters.
