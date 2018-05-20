@@ -1,7 +1,7 @@
 script: "/DefChat/DefChat.gui_script"
 fonts {
   name: "Example"
-  font: "/builtins/fonts/system_font.font"
+  font: "/DefChat/system_font_extended.font"
 }
 background_color {
   x: 0.0
