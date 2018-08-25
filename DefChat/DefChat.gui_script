@@ -219,13 +219,13 @@ function on_input(self, action_id, action)
 	
 	if (action_id == hash("enter") and action.released) then 		-- If enter is pressed, it basically flips a switch value. On/off/on/off etc.
 		if self.enter == false then
-			msg.post(local_player_id, "block_move")
 			self.enter = true
+			shared_data.chat_open = true
 			gui.set_color(self.cL,Properties.commandline_color.active)
 			gui.set_color(self.iT,self.inputColor)
 		elseif self.enter == true then
-			msg.post(local_player_id, "release_move")
 			self.enter = false
+			shared_data.chat_open = false
 			print("DEF_CHAT:HIDDEN_CHARACTERS: " .. self.dltMash)
 			self.dltMash = ""
 			if string.match(self.chat,"%S") ~= nil then
