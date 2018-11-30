@@ -9,6 +9,10 @@ local msgStrings = {}
 
 
 function init(self)
+	-- Save absolute URL to shared_data to make it
+	-- known by utils/helpers.lua
+	shared_data.defchat_url = msg.url()
+
 	gui.set_render_order(1)
 
 	msg.post(".", "acquire_input_focus")
