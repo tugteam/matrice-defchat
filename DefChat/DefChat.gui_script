@@ -11,7 +11,9 @@ local msgStrings = {}
 function init(self)
 	-- Save absolute URL to shared_data to make it
 	-- known by utils/helpers.lua
+	-- and notify multiplayer script (map_channel.script)
 	shared_data.defchat_url = msg.url()
+	msg.post(shared_data.current_map.url, 'defchat_loaded', {})
 
 	gui.set_render_order(1)
 
