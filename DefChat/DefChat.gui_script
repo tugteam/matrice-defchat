@@ -13,7 +13,6 @@ function init(self)
 	-- known by utils/helpers.lua
 	-- and notify multiplayer script (map_channel.script)
 	shared_data.defchat_url = msg.url()
-	msg.post(shared_data.current_map.url, 'defchat_loaded', {})
 
 	gui.set_render_order(1)
 
@@ -110,6 +109,10 @@ function init(self)
 
 	self.caret_alarm.time = Properties.caret_speed
 	self.stamp_alarm.time = Properties.stamp_speed
+
+	-- Display defchat info when loaded
+	msg.post(".", "message", {text = "Press TAB to show the minimap."})
+	msg.post(".", "message", {text = "Learn chat commands by typing /help."})
 
 	--[[ Example message:
 	local ex_Message = {text = "Hello world, I'm DEF_CHAT"}
