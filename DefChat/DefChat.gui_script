@@ -175,7 +175,7 @@ function on_message(self, message_id, message, sender)
 	end
 
 	if message_id == hash("change_font_color") then
-		if tostring(message.in_frame) and tostring(message.in_commandline) == "nil" then
+		if tostring(message.in_frame) == "nil" and tostring(message.in_commandline) == "nil" then
 			print("** ERROR ** DEF_CHAT:CHANGE_FONT_COLOR:FAULT\n            colors in message are nil")
 		else
 			if message.in_frame ~= nil then
