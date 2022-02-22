@@ -37,7 +37,6 @@ function init(self)
 	self.chat = ""
 	self.dltMash = ""
 	self.alt_seq = ""
-	self.char_name_prefix = shared_data.current_char.name .. ': '
 	-- />
 
 	-- < TABLES
@@ -240,7 +239,7 @@ function on_input(self, action_id, action)
 					-- Send typed message to NoobHub
 					msg.post(shared_data.current_map.url, 'send_message', {body = self.chat})
 					-- Add local player name to message:
-					self.chat = self.char_name_prefix .. self.chat
+					self.chat = shared_data.current_char.name .. ': ' .. self.chat
 					buildMessage(self,self.chat)					--Display new message
 				end
 				print("DEF_CHAT:CHAT:RECEIVED_TEXT: " .. self.chat)
@@ -403,11 +402,12 @@ end
 function buildMessage(self,txt)
 	-- Dynamic color for self-typed messages in frame
 	-- If a message is received from a script, colors are managed by this script
-	if txt:find("^" .. self.char_name_prefix .. "/pm") or txt:find("^" .. self.char_name_prefix .. "/mp") then
+	local char_name_prefix = shared_data.current_char.name .. ': '
+	if txt:find("^" .. char_name_prefix .. "/pm") or txt:find("^" .. char_name_prefix .. "/mp") then
 		self.chatColor = vmath.vector4(1, 0, 1, 1) -- private messages: purple
-	elseif txt:find("^" .. self.char_name_prefix .. "/all") then
+	elseif txt:find("^" .. char_name_prefix .. "/all") then
 		self.chatColor = vmath.vector4(1, 0.549, 0, 1) -- worldwide messages: orange
-	elseif txt:find("^" .. self.char_name_prefix .. "/local") then
+	elseif txt:find("^" .. char_name_prefix .. "/local") then
 		self.chatColor = vmath.vector4(1, 1, 1, 1) -- local map messages: white
 	end
 
