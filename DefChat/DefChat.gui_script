@@ -187,6 +187,10 @@ function on_message(self, message_id, message, sender)
 			end
 		end
 	end
+
+	if message_id == hash("render_top") then
+		gui.set_render_order(15)
+	end
 end
 
 function on_input(self, action_id, action)
