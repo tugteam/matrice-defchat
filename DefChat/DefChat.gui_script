@@ -406,13 +406,15 @@ end
 function buildMessage(self,txt)
 	-- Dynamic color for self-typed messages in frame
 	-- If a message is received from a script, colors are managed by this script
-	local char_name_prefix = shared_data.current_char.name .. ': '
-	if txt:find("^" .. char_name_prefix .. "/pm") or txt:find("^" .. char_name_prefix .. "/mp") then
-		self.chatColor = vmath.vector4(1, 0, 1, 1) -- private messages: purple
-	elseif txt:find("^" .. char_name_prefix .. "/all") then
-		self.chatColor = vmath.vector4(1, 0.549, 0, 1) -- worldwide messages: orange
-	elseif txt:find("^" .. char_name_prefix .. "/local") then
-		self.chatColor = vmath.vector4(1, 1, 1, 1) -- local map messages: white
+	local char_name = shared_data.current_char.name
+	if char_name then
+		if txt:find("^" .. char_name .. ": /pm") or txt:find("^" .. char_name .. ": /mp") then
+			self.chatColor = vmath.vector4(1, 0, 1, 1) -- private messages: purple
+		elseif txt:find("^" .. char_name .. ": /all") then
+			self.chatColor = vmath.vector4(1, 0.549, 0, 1) -- worldwide messages: orange
+		elseif txt:find("^" .. char_name .. ": /local") then
+			self.chatColor = vmath.vector4(1, 1, 1, 1) -- local map messages: white
+		end
 	end
 
 	self.chatProperties = get_length(self,txt)
