@@ -414,6 +414,8 @@ function buildMessage(self,txt)
 			self.chatColor = vmath.vector4(1, 0.549, 0, 1) -- worldwide messages: orange
 		elseif txt:find("^" .. char_name .. ": /local") then
 			self.chatColor = vmath.vector4(1, 1, 1, 1) -- local map messages: white
+		else
+			self.inputColor = vmath.vector4(0.4, 0.6, 0.4, 1) -- default instance messages: green
 		end
 	end
 
